@@ -1,0 +1,19 @@
+[tool.black]
+line-length = 200
+
+[tool.flake8]
+exclude = [
+    ".git",
+    ".gitignore",
+    "__pycache__",
+    "venv",
+    ".env"
+]
+max-line-length = 200
+extend-ignore = [
+    "E203",
+    "E704"
+]
+
+[tool.isort]
+profile = "black"
