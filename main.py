@@ -7,16 +7,19 @@ from tiktokapipy.models.video import Video
 
 # TikTokApiPy: https://tiktokpy.readthedocs.io/en/latest/reference/api_reference.html
 
-tag_name: str = "climatechange"
+tags: list[str] = ["climatechange", "nuclear", "nuclearenergy"]
 limit: int = 10
 
 
-async def get_tiktok_test():
+async def get_tiktoks_by_tag(tag: str):
+    '''
+    Gets the TikToks returned first on the platform for a given tag.
+    '''
     tiktok_collection = []
 
     async with AsyncTikTokAPI() as api:
         # Challenge is the TikTok internal name for a hashtag
-        challenge: Challenge = await api.challenge(tag_name, video_limit=10)
+        challenge: Challenge = await api.challenge(tag, video_limit=10)
 
         async for video in challenge.videos:
             assert isinstance(video, Video)
@@ -32,8 +35,10 @@ async def get_tiktok_test():
 
 
 def main():
-    results = asyncio.run(get_tiktok_test())
-    pprint(results)
+    for tag in tags:
+        print(f"Getting TikToks for #{tag}")
+        results = asyncio.run(get_tiktoks_by_tag(tag))
+        pprint(results)
 
 
 if __name__ == "__main__":
