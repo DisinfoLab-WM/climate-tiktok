@@ -4,11 +4,13 @@ from pprint import pprint
 from tiktokapipy.async_api import AsyncTikTokAPI
 from tiktokapipy.models.challenge import Challenge
 from tiktokapipy.models.video import Video
+from tiktokapipy.models.comment import Comment
 
 # TikTokApiPy: https://tiktokpy.readthedocs.io/en/latest/reference/api_reference.html
 
 tags: list[str] = ["climatechange", "nuclear", "nuclearenergy"]
-limit: int = 10
+limit: int = 5
+comment_limit: int = 10
 
 
 async def get_tiktoks_by_tag(tag: str):
@@ -26,9 +28,16 @@ async def get_tiktoks_by_tag(tag: str):
             data = {
                 "desc": video.desc,
                 "plays": video.stats.play_count,
-                "comments": video.stats.comment_count,
+                "comment_count": video.stats.comment_count,
                 "url": video.url,
             }
+
+            comments = []
+            async for comment in video.comments.limit(comment_limit):
+                assert isinstance(comment, Comment)
+                comments.append(comment)
+
+            data["comments"] = comments
             tiktok_collection.append(data)
 
     return tiktok_collection
@@ -43,3 +52,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# Future Functionality:
+# Get hashtags commonly found related to a certain hashtag
+# Get other TikToks of a profile (study profiles spreading disinformation)
